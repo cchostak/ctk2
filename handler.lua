@@ -63,9 +63,17 @@ function checkJWT(token, conf)
         end
 end
 
-function updateDB(token, conf)
+function updateCache(token, conf)
         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE DB FUNCTION")
-        table.insert(token)
+        local cache = singletons.cache
+        local dao = singletons.dao
+      
+        local credential_cache_key = dao.keyauth_credentials:cache_key(token)
+        ngx.log(ngx.CRIT, credential_cache_key)
+        local chaves, erros = cache:get(credential_cache_key)
+        if err then
+          return responses.send_HTTP_INTERNAL_SERVER_ERROR(err)
+        end
         return
 end
 
@@ -112,7 +120,7 @@ function Ctk2Handler:access(conf)
                 if statusCode == 200 then
                         ngx.log(ngx.CRIT, "### STATUS 200 OK ###")
                         ngx.log(ngx.CRIT, uriRetrieved)
-                        local databaseUpdate = updateDB(token, conf)
+                        local databaseUpdate = updateCache(token, conf)
                 else
                         ngx.log(ngx.CRIT, "### NÃO AUTORIZADO ###")
                         return responses.send_HTTP_FORBIDDEN("You cannot consume this service")
