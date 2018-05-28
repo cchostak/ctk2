@@ -53,6 +53,8 @@ function checkJWT(token, conf)
                 }
         end
         return statusCode
+        ngx.log(ngx.CRIT, "########## checkJWT ######## STATUS CODE")
+        ngx.log(ngx.CRIT, statusCode)
 end
 
 function Ctk2Handler:access(conf)
@@ -66,6 +68,10 @@ function Ctk2Handler:access(conf)
 
  -- THE STATUS CODE RETRIEVED FROM THE SERVICE
  local ok, err = checkJWT(token)
+ ngx.log(ngx.CRIT, "########## CTK2 ######## OK")
+ ngx.log(ngx.CRIT, ok)
+ ngx.log(ngx.CRIT, "########## CTK2 ######## ERR")
+ ngx.log(ngx.CRIT, err)
  statusCode = ok
  if statusCode == 200 then
         ngx.log(ngx.CRIT, "### STATUS 200 OK ###")
