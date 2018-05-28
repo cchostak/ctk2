@@ -16,8 +16,8 @@ Ctk2Handler.VERSION = "0.1.0"
 ngx.log(ngx.CRIT, "########## CTK2 ######## EXTENDED BASE PLUGIN")
 
 function Ctk2Handler:new()
-  Ctk2Handler.super.new(self, "ctk2")
-  ngx.log(ngx.CRIT, "########## CTK2 ######## INSTACIATED ITSELF")
+        Ctk2Handler.super.new(self, "ctk2")
+        ngx.log(ngx.CRIT, "########## CTK2 ######## INSTACIATED ITSELF")
 end
 
 -- APÓS A FUNÇÃO SER CHAMADA PELO BLOCO ACCESS, TRARÁ O TOKEN RETIRADO DO CABEÇALHO E O CONF DO SCHEMA.LUA
@@ -65,6 +65,8 @@ end
 
 function updateDB(token, conf)
         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE DB FUNCTION")
+        table.insert(token)
+        return
 end
 
 -- LOAD THE JWT IF IT EXIST IN DATABASE
