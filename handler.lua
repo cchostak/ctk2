@@ -76,16 +76,16 @@ end
 -- RETURN OCCURRENCE OR NIL
 function loadJWT(token, conf)
         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## LOADJWT FUNCTION")
-        ngx.log(ngx.CRIT, token)
-        jwt = token
-        local creds, err = singletons.cache:get(credential_cache_key)
-        if creds == ("ctk2:" .. token) then
-                ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN EXISTE NO CACHE")
-                ngx.log(ngx.CRIT, creds)
-                return true
-        else
-                return nil, err
-        end
+        -- ngx.log(ngx.CRIT, token)
+        -- jwt = token
+        -- local creds, err = singletons.cache:get(credential_cache_key)
+        -- if creds == ("ctk2:" .. token) then
+        --         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN EXISTE NO CACHE")
+        --         ngx.log(ngx.CRIT, creds)
+        --         return true
+        -- else
+        --         return nil, err
+        -- end
         -- local creds, err = singletons.dao.ctk2:find_all {
         --         jwt = jwt
         --       }
