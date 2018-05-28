@@ -9,6 +9,8 @@ local url = require "socket.url"
 local http = require "socket.http"
 local multipart = require "multipart"
 local ipairs = ipairs
+cache = singletons.cache
+dao = singletons.dao
 
 local Ctk2Handler = BasePlugin:extend()
 Ctk2Handler.PRIORITY = 3505
@@ -65,8 +67,6 @@ end
 
 function updateCache(token, conf)
         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE CACHE FUNCTION")
-        local cache = singletons.cache
-        local dao = singletons.dao
         local credential_cache_key = dao.ctk2:cache_key(token)
         ngx.log(ngx.CRIT, credential_cache_key)
         return
