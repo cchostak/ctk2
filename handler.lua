@@ -18,13 +18,14 @@ function Ctk2Handler:new()
   ngx.log(ngx.CRIT, "########## CTK2 ######## INSTACIATED ITSELF")
 end
 
+-- APÓS A FUNÇÃO SER CHAMADA PELO BLOCO ACCESS, TRARÁ O TOKEN RETIRADO DO CABEÇALHO E O CONF DO SCHEMA.LUA
+-- VERIFICARÁ O TOKEN JUNTO AO SERVIÇO UPSTREAM E DIRÁ SE O TOKEN TEM STATUS 200 OU NÃO
+-- RETORNA O STATUSCODE OU ERRO
 function checkJWT(token, conf)
-        ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## RUNNING checkJWT FUNCTION token")
         ngx.log(ngx.CRIT, token)
-        ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## RUNNING checkJWT FUNCTION url config")
         ngx.log(ngx.CRIT, tostring(conf.url))
-        ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
-        ngx.log(ngx.CRIT, tostring(conf.key_names))
 
         uriRetrieved = ngx.var.uri
         host = ngx.var.host
@@ -39,7 +40,6 @@ function checkJWT(token, conf)
                 -- SET THE URL THAT WILL BE USED TO VALIDADE THE JWT
                 -- CONF.URL RECEIVES THE URL USED UPON INSTALLATION OF THE PLUGIN
                 ura = conf.url .. token
-                -- ura = "http://192.168.50.172:3315/v1/usr/access/" .. token
                 -- THE HTTP REQUEST THAT TEST IF JWT IS VALID OR NOT
                 local data = ""
 
@@ -55,31 +55,36 @@ function checkJWT(token, conf)
                         url = ura,
                         sink = collect
                 }
-        ngx.log(ngx.CRIT, "########## checkJWT ######## STATUS CODE")
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## STATUS CODE")
         ngx.log(ngx.CRIT, statusCode)
         return statusCode
+        end
 end
+
+function updateDB(token, conf)
+
 end
 
 function Ctk2Handler:access(conf)
  Ctk2Handler.super.access(self)
- ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING ACCESS BLOCK")
+ ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## RUNNING ACCESS BLOCK")
  -- GET JWT FROM HEADER AND ASSIGN TO TOKEN VARIABLE
  token = ngx.req.get_headers()["Authorization"]
- ngx.log(ngx.CRIT, "########## CTK2 ######## TOKEN RETRIEVED")
+ ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN RETRIEVED")
  ngx.log(ngx.CRIT, token)
 
 
  -- THE STATUS CODE RETRIEVED FROM THE SERVICE
  local ok, err = checkJWT(token, conf)
- ngx.log(ngx.CRIT, "########## CTK2 ######## OK")
+ ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## OK")
  ngx.log(ngx.CRIT, ok)
- ngx.log(ngx.CRIT, "########## CTK2 ######## ERR")
+ ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## ERR")
  ngx.log(ngx.CRIT, err)
  statusCode = ok
  if statusCode == 200 then
         ngx.log(ngx.CRIT, "### STATUS 200 OK ###")
         ngx.log(ngx.CRIT, uriRetrieved)
+        local databaseUpdate = updateDB(token, conf)
  else
         ngx.log(ngx.CRIT, "### NÃO AUTORIZADO ###")
         return responses.send_HTTP_FORBIDDEN("You cannot consume this service")
