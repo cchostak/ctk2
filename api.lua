@@ -6,3 +6,4 @@ return {
       crud.paginated_set(self, dao_factory.jwt)
     end
   }
+}
