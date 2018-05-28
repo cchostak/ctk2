@@ -1,10 +1,16 @@
 # Instalação do plugin
 
-Assumindo que Kong já está funcionando
+Alterar no Kong
+
+vi /etc/kong/kong.conf
+
+linha 62, custom_plugins = ctk2
+
+Após:
 
 cd /usr/local/share/lua/5.1/kong/plugins/
 
-git clone https://github.com/cchostak/ctk.git
+git clone https://github.com/cchostak/ctk2.git
 
 kong restart
 
