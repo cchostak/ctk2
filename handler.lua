@@ -6,7 +6,6 @@ local utils = require "kong.tools.utils"
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "socket.http"
-local access = require "kong.plugins.ctk2.access"
 local ipairs = ipairs
 
 local Ctk2Handler = BasePlugin:extend()
