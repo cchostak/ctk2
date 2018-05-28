@@ -21,6 +21,10 @@ end
 function checkJWT(token, conf)
         ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
         ngx.log(ngx.CRIT, token)
+        ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
+        ngx.log(ngx.CRIT, tostring(conf.url))
+        ngx.log(ngx.CRIT, "########## CTK2 ######## RUNNING checkJWT FUNCTION")
+        ngx.log(ngx.CRIT, tostring(conf.key_names))
 
         uriRetrieved = ngx.var.uri
         host = ngx.var.host
@@ -67,7 +71,7 @@ function Ctk2Handler:access(conf)
 
 
  -- THE STATUS CODE RETRIEVED FROM THE SERVICE
- local ok, err = checkJWT(token)
+ local ok, err = checkJWT(token, conf)
  ngx.log(ngx.CRIT, "########## CTK2 ######## OK")
  ngx.log(ngx.CRIT, ok)
  ngx.log(ngx.CRIT, "########## CTK2 ######## ERR")
