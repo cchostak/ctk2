@@ -1,7 +1,4 @@
 local crud = require "kong.api.crud_helpers"
-local db  = singletons.db
-local dao = singletons.dao
-
 
 return {
   ["/consumers/:username_or_id/acls/"] = {
