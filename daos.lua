@@ -25,7 +25,7 @@ local function check_unique(jwt)
 end
 
 local SCHEMA = {
-  ngx.log(ngx.CRIT, "########## DAOS.LUA ######## CHECK SCHEMA")
+  ngx.log(ngx.CRIT, "########## DAOS.LUA ######## CHECK SCHEMA"),
   primary_key = {"id"},
   table = "ctk2",
   cache_key = { "jwt" },
