@@ -3,9 +3,11 @@ local BasePlugin = require "kong.plugins.base_plugin"
 local responses = require "kong.tools.responses"
 local constants = require "kong.constants"
 local utils = require "kong.tools.utils"
+local public_tools = require "kong.tools.public"
 local cjson = require "cjson"
 local url = require "socket.url"
 local http = require "socket.http"
+local multipart = require "multipart"
 local ipairs = ipairs
 
 local Ctk2Handler = BasePlugin:extend()
@@ -62,33 +64,58 @@ function checkJWT(token, conf)
 end
 
 function updateDB(token, conf)
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE DB FUNCTION")
+end
 
+-- LOAD THE JWT IF IT EXIST IN DATABASE
+-- RETURN OCCURRENCE OR NIL
+function loadJWT(token, conf)
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## LOADJWT FUNCTION")
+        ngx.log(ngx.CRIT, token)
+        jwt = token
+        local creds, err = singletons.dao.ctk2:find_all {
+                jwt = jwt
+              }
+              if not creds then
+                return nil, err
+              end
+              ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## AFTER SINGLETONS")
+              ngx.log(ngx.CRIT, creds[1])
+              return creds[1] 
 end
 
 function Ctk2Handler:access(conf)
- Ctk2Handler.super.access(self)
- ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## RUNNING ACCESS BLOCK")
- -- GET JWT FROM HEADER AND ASSIGN TO TOKEN VARIABLE
- token = ngx.req.get_headers()["Authorization"]
- ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN RETRIEVED")
- ngx.log(ngx.CRIT, token)
+        Ctk2Handler.super.access(self)
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## RUNNING ACCESS BLOCK")
+        -- GET JWT FROM HEADER AND ASSIGN TO TOKEN VARIABLE
+        token = ngx.req.get_headers()["Authorization"]
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN RETRIEVED")
+        ngx.log(ngx.CRIT, token)
 
-
- -- THE STATUS CODE RETRIEVED FROM THE SERVICE
- local ok, err = checkJWT(token, conf)
- ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## OK")
- ngx.log(ngx.CRIT, ok)
- ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## ERR")
- ngx.log(ngx.CRIT, err)
- statusCode = ok
- if statusCode == 200 then
-        ngx.log(ngx.CRIT, "### STATUS 200 OK ###")
-        ngx.log(ngx.CRIT, uriRetrieved)
-        local databaseUpdate = updateDB(token, conf)
- else
-        ngx.log(ngx.CRIT, "### NÃO AUTORIZADO ###")
-        return responses.send_HTTP_FORBIDDEN("You cannot consume this service")
- end
+        local chave, erro = loadJWT(token, conf)
+        credenciais = chave
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## CREDENCIAIS")
+        ngx.log(ngx.CRIT, credenciais)
+        if credenciais ~= nil then
+                ngx.log(ngx.CRIT, "### AS CREDENCIAIS EXISTEM NO DB ###")
+                ngx.log(ngx.CRIT, credenciais)
+        else
+        -- THE STATUS CODE RETRIEVED FROM THE SERVICE
+                local ok, err = checkJWT(token, conf)
+                ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## OK")
+                ngx.log(ngx.CRIT, ok)
+                ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## ERR")
+                ngx.log(ngx.CRIT, err)
+                statusCode = ok
+                if statusCode == 200 then
+                        ngx.log(ngx.CRIT, "### STATUS 200 OK ###")
+                        ngx.log(ngx.CRIT, uriRetrieved)
+                        local databaseUpdate = updateDB(token, conf)
+                else
+                        ngx.log(ngx.CRIT, "### NÃO AUTORIZADO ###")
+                        return responses.send_HTTP_FORBIDDEN("You cannot consume this service")
+                end
+        end
 end
 
 return Ctk2Handler
