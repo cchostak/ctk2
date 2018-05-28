@@ -51,10 +51,10 @@ function checkJWT(token, conf)
                         url = ura,
                         sink = collect
                 }
-        end
-        return statusCode
         ngx.log(ngx.CRIT, "########## checkJWT ######## STATUS CODE")
         ngx.log(ngx.CRIT, statusCode)
+        return statusCode
+end
 end
 
 function Ctk2Handler:access(conf)
