@@ -38,8 +38,8 @@ function checkJWT(token, conf)
                 ngx.log(ngx.CRIT, token)
                 -- SET THE URL THAT WILL BE USED TO VALIDADE THE JWT
                 -- CONF.URL RECEIVES THE URL USED UPON INSTALLATION OF THE PLUGIN
-                -- ura = conf.url .. token
-                ura = "http://192.168.50.172:3315/v1/usr/access/" .. token
+                ura = conf.url .. token
+                -- ura = "http://192.168.50.172:3315/v1/usr/access/" .. token
                 -- THE HTTP REQUEST THAT TEST IF JWT IS VALID OR NOT
                 local data = ""
 
