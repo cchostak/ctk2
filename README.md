@@ -29,7 +29,7 @@ curl -i -X POST http://localhost:8001/routes/ \
 # 3. Instalar plugin
 
 curl -X POST http://localhost:8001/services/{NOME DO SERVIÇO}/plugins \
-    --data "name=ctk" \
+    --data "name=ctk2" \
 	--data "config.url={URL QUE SERÁ USADA PARA VALIDAÇÃO DO JWT}"
 
 # EXEMPLO
@@ -50,5 +50,5 @@ curl -i -X POST http://localhost:8001/routes/ \
 3. Instalar plugin
 
 curl -X POST http://localhost:8001/services/usuarios/plugins \
-    --data "name=ctk" \
+    --data "name=ctk2" \
 	--data "config.url=http://jwt.com/access"
