@@ -79,7 +79,7 @@ function loadJWT(token, conf)
         ngx.log(ngx.CRIT, token)
         jwt = token
         local creds, err = singletons.cache:get(credential_cache_key)
-        if creds == ("ctk2:" .. token)
+        if creds == ("ctk2:" .. token) then
                 ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN EXISTE NO CACHE")
                 ngx.log(ngx.CRIT, creds)
                 return true
