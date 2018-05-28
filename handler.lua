@@ -64,16 +64,11 @@ function checkJWT(token, conf)
 end
 
 function updateCache(token, conf)
-        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE DB FUNCTION")
+        ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## UPDATE CACHE FUNCTION")
         local cache = singletons.cache
         local dao = singletons.dao
-      
-        local credential_cache_key = dao.keyauth_credentials:cache_key(token)
+        local credential_cache_key = dao.ctk2:cache_key(token)
         ngx.log(ngx.CRIT, credential_cache_key)
-        local chaves, erros = cache:get(credential_cache_key)
-        if err then
-          return responses.send_HTTP_INTERNAL_SERVER_ERROR(err)
-        end
         return
 end
 
@@ -83,15 +78,23 @@ function loadJWT(token, conf)
         ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## LOADJWT FUNCTION")
         ngx.log(ngx.CRIT, token)
         jwt = token
-        local creds, err = singletons.dao.ctk2:find_all {
-                jwt = jwt
-              }
-              if not creds then
+        local creds, err = singletons.cache:get(credential_cache_key)
+        if creds == ("ctk2:" .. token)
+                ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## TOKEN EXISTE NO CACHE")
+                ngx.log(ngx.CRIT, creds)
+                return true
+        else
                 return nil, err
-              end
-              ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## AFTER SINGLETONS")
-              ngx.log(ngx.CRIT, creds[1])
-              return creds[1] 
+        end
+        -- local creds, err = singletons.dao.ctk2:find_all {
+        --         jwt = jwt
+        --       }
+        --       if not creds then
+        --         return nil, err
+        --       end
+        --       ngx.log(ngx.CRIT, "########## HANDLER.LUA ######## AFTER SINGLETONS")
+        --       ngx.log(ngx.CRIT, creds[1])
+        --       return creds[1] 
 end
 
 function Ctk2Handler:access(conf)
